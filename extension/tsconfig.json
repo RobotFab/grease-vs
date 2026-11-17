@@ -1,0 +1,20 @@
+{
+  // Type check only: esbuild (scripts/build.mjs) bundles src/ and server/.
+  // "bundler" resolution matches how esbuild resolves the server/lib/*.mjs
+  // imports (typed by the .d.mts files beside them).
+  "compilerOptions": {
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node", "vscode"],
+    "noEmit": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "out", "server"]
+}

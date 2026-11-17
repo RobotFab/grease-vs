@@ -1,0 +1,31 @@
+# Everything is bundled by esbuild into dist/extension.js, dist/server.mjs, dist/plotter.js and
+# dist/grease-mcp.mjs (the stdio bridge). dist/server.mjs embeds dist/plotter-app.html
+# (the Plotter MCP App), so that file is left out below. No native .node files remain —
+# serialport and usb have been replaced by arduino-cli subprocesses, so the
+# entire node_modules directory can be excluded.
+node_modules/**
+
+# Exclude dev/build artifacts not needed at runtime
+**/.DS_Store
+package-lock.json
+.npmrc
+dist/plotter-app.html
+dist/*.map
+dist/*.orig
+dist/*.tmp
+*.vsix
+
+# server/ source (and SKILL.md, embedded in both bundles) — exclude originals
+server/**
+scripts/**
+
+# src/ source is bundled into dist/extension.js — exclude originals
+src/**
+tsconfig.json
+eslint.config.mjs
+out/**
+**/.clangd
+*.mcpb
+
+# Readme pictures load from raw.githubusercontent.com; keep them out of the package
+resources/media/**

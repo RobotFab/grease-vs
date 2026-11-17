@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+  The Plotter MCP App page (ui://grease/plotter). scripts/build.mjs inlines
+  the bundled plotterApp.mjs at the marker below into dist/plotter-app.html,
+  which AI Tether embeds. Look A, as in ui/serialPlotterPanel.ts, without the
+  port fields: the agent opens the port.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grease Plotter</title>
+    <style>
+      :root { --panel: #0d1611; --ink: #b5ffc8; --muted: #76bf8b; --stroke: #2d4d3a; --mono: Consolas, Menlo, Monaco, "Courier New", monospace; color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 10px; height: 440px; display: flex; flex-direction: column; background: radial-gradient(circle at 20% 0%, #0c120f, #050806 65%); color: var(--ink); font-family: var(--mono); font-size: 11px; }
+      body.page { height: 100vh; }
+      .bar { display: flex; gap: 10px; align-items: center; border: 1px solid var(--stroke); background: var(--panel); padding: 6px 8px; border-radius: 8px; margin-bottom: 8px; }
+      .title { color: #e5ffe5; }
+      .status { font-size: 10px; color: var(--muted); margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .cmdbtn { color: #d8ffd8; cursor: pointer; user-select: none; }
+      .cmdbtn:hover { text-decoration: underline; }
+      #tabs { display: flex; gap: 2px; }
+      #tabs button { background: #07100b; color: #4c7a5a; border: 1px solid var(--stroke); border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 14px; font: 11px var(--mono); cursor: pointer; }
+      #tabs button.lit { color: var(--ink); }
+      #tabs button.lit::before { content: "\25CF  "; color: #7dff9e; }
+      #tabs button.on { background: var(--panel); color: #e5ffe5; border-color: #49c06b; }
+      #stage { position: relative; flex: 1; min-height: 160px; overflow: hidden; border: 1px solid var(--stroke); border-radius: 0 8px 8px 8px; }
+      #stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      #stage canvas#bubble { pointer-events: none; opacity: 0.5; }
+      #legend { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding: 5px 8px; margin-top: 4px; border: 1px solid var(--stroke); border-radius: 6px; background: var(--panel); min-height: 26px; font-size: 10px; }
+      .leg-item { cursor: pointer; user-select: none; }
+      .leg-item:hover { text-decoration: underline; }
+      .leg-item.off { opacity: .3; }
+      .leg-bg { cursor: pointer; color: var(--muted); border: 1px solid var(--stroke); padding: 1px 6px; border-radius: 3px; margin-left: auto; }
+      .leg-bg:hover { color: var(--ink); }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <span class="title">Grease Plotter</span>
+      <span id="run">█stopped</span>
+      <span class="cmdbtn" id="clear" title="Clear the Plotter (agents too)">||C||</span>
+      <span class="cmdbtn" id="motion" title="Bubble-up on or off">||B||</span>
+      <span class="status" id="status">Connecting…</span>
+    </div>
+    <div id="tabs"><button data-m="time">Time</button><button data-m="xy" title="name_x + name_y on one line">XY</button><button data-m="radar" title="name_deg + name_cm on one line">Radar</button></div>
+    <div id="stage"><canvas id="bubble"></canvas><canvas id="canvas"></canvas></div>
+    <div id="legend"></div>
+    <script type="module">/*PLOTTER_APP_JS*/</script>
+  </body>
+</html>

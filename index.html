@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grease VS</title>
+<meta name="description" content="Grease VS treats English as the programming language. AI agents write, compile and upload your microcontroller sketch, then read the board's serial output.">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="Grease VS">
+<meta property="og:description" content="English is the programming language. Agents write, compile, upload and debug microcontroller code; you watch the same plots.">
+<meta property="og:image" content="https://raw.githubusercontent.com/RobotFab/grease-vs/main/extension/resources/media/sidebar.png">
+<meta property="og:url" content="https://robotfab.github.io/grease-vs/">
+<link rel="icon" href="extension/resources/icon.png">
+<style>
+  :root {
+    --bg: #040704;
+    --panel: #0a110b;
+    --line: #17311d;
+    --text: #d6e6d9;
+    --muted: #8aa391;
+    --green: #6ee7a0;
+    --pink: #f07a8c;
+    --violet: #9b8cff;
+    --yellow: #f2f07a;
+    --red: #ff6b6b;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 17px/1.6 var(--sans);
+  }
+  a { color: var(--green); }
+  img { display: block; max-width: 100%; height: auto; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+  /* top bar */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(4, 7, 4, .88);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; align-items: center; gap: 20px; height: 52px; font-family: var(--mono); font-size: 14px; }
+  nav .brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 700; margin-right: auto; }
+  nav .brand img { width: 26px; height: 26px; border-radius: 6px; }
+  nav a.link { color: var(--muted); text-decoration: none; }
+  nav a.link:hover { color: var(--green); }
+
+  /* hero */
+  header { padding: 64px 0 32px; text-align: center; }
+  .kicker { font-family: var(--mono); color: var(--green); font-size: 14px; letter-spacing: .04em; }
+  h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.08; margin: 14px 0 18px; letter-spacing: -.02em; }
+  h1 em { font-style: normal; color: var(--green); }
+  .lede { max-width: 720px; margin: 0 auto; color: var(--muted); font-size: 19px; }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 30px 0 40px; }
+  .btn {
+    font-family: var(--mono); font-size: 15px; text-decoration: none;
+    padding: 10px 16px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--panel); color: var(--green);
+  }
+  .btn:hover { border-color: var(--green); }
+  .btn.primary { background: var(--green); color: #031006; border-color: var(--green); font-weight: 700; }
+  .btn::before { content: "||"; opacity: .55; margin-right: 2px; }
+  .btn::after { content: "||"; opacity: .55; margin-left: 2px; }
+  .shot {
+    border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    background: var(--panel);
+    box-shadow: 0 0 0 1px rgba(110, 231, 160, .05), 0 30px 80px -30px rgba(110, 231, 160, .25);
+  }
+  figcaption { font-family: var(--mono); font-size: 13px; color: var(--muted); padding: 10px 14px; border-top: 1px solid var(--line); }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font-family: var(--mono); font-size: 15px; color: var(--green); letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; }
+  h3 { font-size: 26px; line-height: 1.25; margin: 0 0 14px; }
+  p { margin: 0 0 14px; }
+  .muted { color: var(--muted); }
+  code { font-family: var(--mono); font-size: .9em; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+
+  .split { display: grid; grid-template-columns: 1fr 220px; gap: 40px; align-items: start; }
+  .split.wide { grid-template-columns: 1fr 1fr; }
+  .split.side { grid-template-columns: 280px 1fr; }
+
+  .plots { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .plots .full { grid-column: 1 / -1; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 18px; padding: 0; list-style: none; }
+  .tags li { font-family: var(--mono); font-size: 13px; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+  .tags.boards li { color: var(--green); }
+
+  ol.steps { padding-left: 22px; margin: 0; }
+  ol.steps li { margin-bottom: 10px; }
+  ol.steps li::marker { font-family: var(--mono); color: var(--green); }
+
+  blockquote {
+    margin: 24px 0 0; padding: 18px 22px; border-left: 3px solid var(--green);
+    background: var(--panel); border-radius: 0 10px 10px 0; font-size: 19px;
+  }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; font-size: 14px; color: var(--muted); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+
+  @media (max-width: 760px) {
+    body { font-size: 16px; }
+    nav a.link.opt { display: none; }
+    header { padding-top: 40px; }
+    .split, .split.wide, .split.side, .plots { grid-template-columns: 1fr; }
+    .split .rain { max-width: 220px; margin: 0 auto; }
+    .split.side .shotcol { max-width: 300px; margin: 0 auto; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="extension/resources/icon.png" alt="">Grease VS</a>
+    <a class="link opt" href="#plotter">Plotter</a>
+    <a class="link opt" href="#agents">Agents</a>
+    <a class="link opt" href="#setup">Setup</a>
+    <a class="link" href="https://github.com/RobotFab/grease-vs">GitHub</a>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="wrap">
+    <div class="kicker">ESP32 · RP2350/RP2040 · nRF52840 · Arduino</div>
+    <h1>English is the <em>programming language</em>.</h1>
+    <p class="lede">Grease is a software to build microcontrollers and robots capable of debugging themselves. From LED blinking to Reinforcement Learning experiments, this is an all-in-one solution for your problems.</p>
+    <div class="buttons">
+      <a class="btn primary" href="https://marketplace.visualstudio.com/items?itemName=RobotFab.arduino-grease">VS Code Marketplace</a>
+      <a class="btn" href="https://open-vsx.org/extension/RobotFab/arduino-grease">Open VSX</a>
+      <a class="btn" href="https://github.com/RobotFab/grease-vs/releases">Claude Desktop .mcpb</a>
+    </div>
+    <figure class="shot" style="margin:0">
+      <img src="extension/resources/media/hero.gif" width="800" height="493" alt="One English sentence becomes a blinking LED: the agent writes, compiles and uploads the sketch, then reads the serial output">
+      <figcaption>/grease blink the led on my esp32 c6 and print the led state every 200ms</figcaption>
+    </figure>
+  </div>
+</header>
+
+<section>
+  <div class="wrap split">
+    <div>
+      <h2>What it is</h2>
+      <h3>Agents write, compile and upload. You both watch the board.</h3>
+      <p>Grease treats English as the programming language. The more technical and precise your request, the more the agent can build: wiring help, sensor checks, behavior tuning, Bluetooth protocols, inverse kinematics.</p>
+      <p>AI agents write, compile and upload your sketch, then read the board's serial output; you watch the same output and plots in the sidebar.</p>
+      <p class="muted">Works inside</p>
+      <ul class="tags">
+        <li>VS Code</li><li>Cursor</li><li>Windsurf</li><li>Devin</li><li>Antigravity</li>
+      </ul>
+      <p class="muted">Boards</p>
+      <ul class="tags boards">
+        <li>ESP32</li><li>RP2350 / RP2040</li><li>nRF52840</li><li>Arduino</li><li>Pololu Romi 32U4</li>
+      </ul>
+      <p class="muted">Agents outside the editor (Claude Code, Codex, Claude Desktop) connect to the same board through Grease's local AI Tether.</p>
+    </div>
+    <div class="rain shot">
+      <img src="extension/resources/media/compile-rain.png" width="208" height="853" alt="The Grease VS sidebar while compiling: board, port and buttons over a falling-code animation">
+    </div>
+  </div>
+</section>
+
+<section id="plotter">
+  <div class="wrap">
+    <h2>Plotter, three types</h2>
+    <h3>Time (the traditional one), XY, and Radar.</h3>
+    <p>The agent reads the same numbers you see. Print <code>name_x</code> + <code>name_y</code> for XY, or <code>name_deg</code> + <code>name_cm</code> for Radar (0° up, clockwise).</p>
+    <div class="plots">
+      <figure class="shot full" style="margin:0">
+        <img src="extension/resources/media/plotter-time.gif" width="640" height="489" alt="Time Plotter with four live signals" style="width:100%">
+        <figcaption>Time</figcaption>
+      </figure>
+      <figure class="shot" style="margin:0">
+        <img src="extension/resources/media/plotter-xy.png" width="778" height="618" alt="XY Plotter drawing a circle from pos_x and pos_y">
+        <figcaption>XY</figcaption>
+      </figure>
+      <figure class="shot" style="margin:0">
+        <img src="extension/resources/media/plotter-radar.png" width="992" height="688" alt="Radar Plotter drawing a spiral from name_deg and name_cm">
+        <figcaption>Radar</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="agents">
+  <div class="wrap split side">
+    <div class="shotcol shot">
+      <img src="extension/resources/media/help.png" width="266" height="490" alt="Help panel: setup checks and the agents found on this computer">
+    </div>
+    <div>
+      <h2>Any agent</h2>
+      <h3>An MCP server for your agent.</h3>
+      <p>AI Tether runs on your computer and gives any agent the tools: compile, upload, Serial, Plotter, installs.</p>
+      <p>Use any agent you like: Copilot, Claude, Codex, Cursor, Windsurf. In the Grease VS sidebar open <strong>Help</strong>, press <strong>Add tools</strong> for your agent, restart it, then type <code>/grease</code>. The agent reads the Grease Skill and knows what to do.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap split side">
+    <div class="shotcol shot">
+      <img src="extension/resources/media/managers.png" width="266" height="800" alt="Managers panel: board cores and libraries, installed without the terminal">
+    </div>
+    <div>
+      <h2>No terminal</h2>
+      <h3>Installs without the terminal.</h3>
+      <p>Board cores and libraries install from the Managers panel, or the agent installs them when a sketch needs one. arduino-cli installs by itself.</p>
+      <p class="muted">Grease goes online only to install. Each install shows a pop-up. Everything else stays offline.</p>
+    </div>
+  </div>
+</section>
+
+<section id="setup">
+  <div class="wrap split wide">
+    <div>
+      <h2>Setup</h2>
+      <h3>Nothing to install by hand.</h3>
+      <ol class="steps">
+        <li>Install Grease VS from the <a href="https://marketplace.visualstudio.com/items?itemName=RobotFab.arduino-grease">Marketplace</a> or <a href="https://open-vsx.org/extension/RobotFab/arduino-grease">Open VSX</a>. When no arduino-cli is found, Grease installs it.</li>
+        <li>Optional: Node.js, needed only for agents outside the editor (Claude Code, Codex, Claude Desktop).</li>
+        <li>Open the Grease VS sidebar › <strong>Help</strong>. It checks both programs and shows a fix line when one is missing.</li>
+        <li>In <strong>Help › Your agents</strong>, press <strong>Add tools</strong> for each agent you use, then restart that agent.</li>
+        <li>Type <code>/grease</code> in your agent (<code>$grease</code> in Codex), then ask: "blink the LED on my ESP32-S3".</li>
+      </ol>
+    </div>
+    <div class="shot">
+      <img src="extension/resources/media/sidebar.png" width="1540" height="896" alt="Grease VS open in the editor: sidebar, the blink sketch, serial output and the agent chat">
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Inspiration</h2>
+    <p>This was inspired by my work in 2015 on the "Mother Robot" a system that could build and improve its own "children."</p>
+    <p>The robots couldn't effectively see what was happening in the real world, relying on us to be their sensors and set goals. Now they can debug themselves, while we concentrate on setting their goals.</p>
+    <blockquote>"If mechanical engineers are the knights, and computer scientists are wizards, then we roboticists are the paladins."</blockquote>
+    <p style="margin-top:18px">Designing algorithms is getting easier, and the next frontier is practical/experimental. The real Robotics' bottleneck is where code meets metal.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Developed by <a href="https://www.wpi.edu/people/faculty/arosendo">Prof. Andre Rosendo</a>.</span>
+    <span>Freeware, open under the MIT license, provided "as is", without warranty. · <a href="https://github.com/RobotFab/grease-vs">Source</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

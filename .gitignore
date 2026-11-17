@@ -1,0 +1,34 @@
+# Ignore everything at the repo root
+/*
+
+# Keep only these at the root
+!/.gitignore
+!/extension/
+!/readme.md
+!/index.html
+!/LICENSE
+
+# Inside extension/, still ignore dependencies
+extension/node_modules/
+
+# Old tsc output — superseded by esbuild dist/ bundle
+extension/out/
+
+# Local editor and macOS files
+**/.DS_Store
+extension/snippets/**/.clangd
+extension/*.mcpb
+extension/*.vsix
+
+# Working notes stay local, wherever they land (ADRs, plans, handoffs, checks).
+# Tracked docs are only readme.md, extension/readme.md and extension/server/**.
+**/docs/
+**/adr/
+**/PLAN*.md
+**/EXEC-PLAN*.md
+**/HANDOFF*.md
+**/*-CHECK-*.md
+**/SECURITY-REVIEW*.md
+**/SUGGESTIONS*.md
+**/CONTEXT.md
+**/next_steps.md

@@ -1,0 +1,242 @@
+{
+  "name": "arduino-grease",
+  "displayName": "Grease VS (formerly Arduino Grease)",
+  "publisher": "RobotFab",
+  "version": "2.0.0",
+  "description": "Formerly Arduino Grease. Lets AI agents (Claude, Codex, Copilot) compile, upload, read serial and plot for ESP32, RP2350/RP2040, nRF52840 and Arduino boards through arduino-cli, offline except for board and library installs.",
+  "releaseNotes": "2.0.0: renamed Grease VS (same ID, same links). arduino-cli runs without a shell on every OS, offline except for marked board and library installs, with per-step time limits. GitHub library install fixed. Romi 32U4 and RP2350 boards recognized without the cloud.",
+  "main": "dist/extension.js",
+  "icon": "icon.png",
+  "scripts": {
+    "compile": "tsc -p .",
+    "build": "node ./scripts/build.mjs",
+    "watch": "node ./scripts/build.mjs --watch",
+    "lint": "eslint .",
+    "package": "npx @vscode/vsce package --allow-missing-repository",
+    "package:mcpb": "node ./scripts/pack-mcpb.mjs"
+  },
+  "keywords": [
+    "arduino",
+    "esp32",
+    "rp2350",
+    "rp2040",
+    "nrf52840",
+    "arduino-cli",
+    "mcp",
+    "claude",
+    "ai agent",
+    "robotics"
+  ],
+  "author": "Andre Rosendo",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "vscode": "^1.105.1"
+  },
+  "categories": [
+    "Programming Languages",
+    "Themes",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionDependencies": [],
+  "contributes": {
+    "languages": [
+      {
+        "id": "arduino",
+        "extensions": [
+          ".ino"
+        ],
+        "aliases": [
+          "Arduino",
+          "arduino"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "arduino",
+        "scopeName": "source.arduino",
+        "path": "./syntaxes/arduino.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "Grease",
+        "uiTheme": "vs-dark",
+        "path": "./themes/grease-color-theme.json"
+      },
+      {
+        "label": "Graphite",
+        "uiTheme": "vs-dark",
+        "path": "./themes/graphite-color-theme.json"
+      }
+    ],
+    "configuration": {
+      "title": "Grease VS",
+      "properties": {
+        "arduinoMcp.motion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Animate the glyphs that rise through the Grease sidebar. The eye under AI Tether flips this too. Off also when the operating system asks for reduced motion."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "arduinoMcp.startSketch",
+        "title": "Grease: Start Sketch"
+      },
+      {
+        "command": "arduinoMcp.verify",
+        "title": "Grease: Compile Sketch"
+      },
+      {
+        "command": "arduinoMcp.upload",
+        "title": "Grease: Upload Sketch"
+      },
+      {
+        "command": "arduinoMcp.serverStatus",
+        "title": "Grease: Server Status"
+      },
+      {
+        "command": "arduinoMcp.refreshServer",
+        "title": "Grease: Refresh Server"
+      },
+      {
+        "command": "arduinoMcp.refreshPortsBoards",
+        "title": "Grease: Refresh Ports/Boards"
+      },
+      {
+        "command": "arduinoMcp.startServer",
+        "title": "Grease: Start Server"
+      },
+      {
+        "command": "arduinoMcp.stopServer",
+        "title": "Grease: Stop Server"
+      },
+      {
+        "command": "arduinoMcp.toggleServer",
+        "title": "Grease: Toggle Server"
+      },
+      {
+        "command": "arduinoMcp.installCore",
+        "title": "Grease: Install Board Core"
+      },
+      {
+        "command": "arduinoMcp.selectTarget",
+        "title": "Grease: Select Board/Port"
+      },
+      {
+        "command": "arduinoMcp.openSerialMonitor",
+        "title": "Grease: Open Serial Monitor"
+      },
+      {
+        "command": "arduinoMcp.serialCommand",
+        "title": "Grease: Serial Command"
+      },
+      {
+        "command": "arduinoMcp.openSerialPlotter",
+        "title": "Grease: Open Serial Plotter"
+      },
+      {
+        "command": "arduinoMcp.openExamples",
+        "title": "Grease: Open Examples"
+      },
+      {
+        "command": "arduinoMcp.cycleAccentColor",
+        "title": "Grease: Cycle Accent Color"
+      },
+      {
+        "command": "arduinoMcp.openGreasePanel",
+        "title": "Grease: Open Help (setup and agents)"
+      },
+      {
+        "command": "arduinoMcp.addAgentTools",
+        "title": "Grease: Add Grease Tools to Agents"
+      },
+      {
+        "command": "arduinoMcp.reinstallSkill",
+        "title": "Grease: Reinstall the Grease Skill"
+      },
+      {
+        "command": "arduinoMcp.removeSkill",
+        "title": "Grease: Remove the Grease Skill"
+      },
+      {
+        "command": "arduinoMcp.showSkill",
+        "title": "Grease: Show the Grease Skill"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "arduinoMcp",
+          "title": "Grease VS",
+          "icon": "resources/activity/arduino-mcp.svg"
+        }
+      ]
+    },
+    "views": {
+      "arduinoMcp": [
+        {
+          "id": "arduinoMcp.toolbar",
+          "name": "",
+          "type": "webview",
+          "icon": "resources/activity/arduino-mcp.svg"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "arduinoMcp.upload",
+        "key": "F5",
+        "when": "editorTextFocus && resourceExtname == .ino"
+      },
+      {
+        "command": "arduinoMcp.upload",
+        "key": "shift+enter",
+        "mac": "shift+enter",
+        "when": "editorTextFocus && resourceExtname == .ino"
+      }
+    ],
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "grease.aiTether",
+        "label": "Grease AI Tether"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@anthropic-ai/mcpb": "2.1.2",
+    "@modelcontextprotocol/ext-apps": "2.0.3",
+    "@types/node": "^25.6.0",
+    "@types/vscode": "^1.105.1",
+    "@typescript-eslint/eslint-plugin": "^8.59.0",
+    "@typescript-eslint/parser": "^8.59.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.2.1",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@cfworker/json-schema": "^4.1.1",
+    "@modelcontextprotocol/express": "2.0.2",
+    "@modelcontextprotocol/node": "2.1.2",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/server": "2.4.0",
+    "express": "^5.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RobotFab/grease-vs.git"
+  },
+  "homepage": "https://robotfab.github.io/grease-vs/",
+  "bugs": {
+    "url": "https://github.com/RobotFab/grease-vs/issues"
+  }
+}
